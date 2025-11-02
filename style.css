@@ -251,7 +251,9 @@ html {
     color: transparent;
 }
 
-.hero img.hero-image {
+.hero img.hero-image,
+.hero video.hero-image,
+.hero iframe.hero-image {
     width: 100%;
     height: clamp(260px, 50vh, 520px);
     object-fit: cover;
@@ -259,6 +261,40 @@ html {
     border-radius: 20px;
     box-shadow: var(--shadow-lg);
     display: block;
+}
+
+/* Custom thumbnail that swaps to YouTube iframe on click */
+.hero .hero-video-thumb {
+    width: 100%;
+    height: clamp(260px, 50vh, 520px);
+    border-radius: 20px;
+    box-shadow: var(--shadow-lg);
+    background: url('SuhbahTeam.png') center/cover no-repeat;
+    position: relative;
+    cursor: pointer;
+}
+
+.hero .hero-video-thumb .play-icon::before {
+    content: '▶';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+.hero .hero-video-thumb:hover .play-icon::before,
+.hero .hero-video-thumb:focus-visible .play-icon::before {
+    background: rgba(0, 0, 0, 0.65);
 }
 
 .hero-text p {
@@ -461,6 +497,8 @@ html {
     overflow: hidden;
     box-shadow: var(--shadow);
     transition: all 0.3s ease;
+    display: flex;           /* make content stretch to bottom */
+    flex-direction: column;  /* stack image then content */
 }
 
 .program-card,
@@ -487,8 +525,19 @@ html {
     background: var(--light-green);
 }
 
+.program-image img.program-photo {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+    border: none;
+}
+
 .program-content {
     padding: 2rem;
+    flex: 1;                  /* fill remaining height of the card */
+    display: flex;
+    flex-direction: column;
 }
 
 .program-content h3 {
@@ -529,10 +578,197 @@ html {
     font-weight: bold;
 }
 
+/* Highlights Section */
+.highlights {
+    padding: 6rem 0;
+    background: radial-gradient(1200px 800px at 10% 10%, rgba(127,176,105,0.08), transparent 60%),
+                radial-gradient(900px 600px at 90% 20%, rgba(106,154,86,0.06), transparent 65%),
+                #0b1020;
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 8rem; /* add space while keeping dark background */
+}
+
+.highlights::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(closest-side, rgba(0,0,0,0.5), rgba(0,0,0,0));
+    pointer-events: none;
+}
+
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+}
+
+.video-card {
+    background: var(--accent-white);
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+    padding: 1rem 1rem 1.5rem;
+    border: 1px solid var(--border-gray);
+}
+
+.video-wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 */
+    border-radius: 12px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: var(--shadow);
+}
+
+.video-wrapper iframe,
+.video-wrapper video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+    object-fit: cover;
+}
+
+/* Portrait aspect for reels (9:16) */
+.video-wrapper.portrait {
+    padding-top: 177.78%;
+}
+
+/* Image thumbnail as video link */
+.video-wrapper img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.video-thumb-link {
+    position: absolute;
+    inset: 0;
+}
+
+.video-thumb-link::after {
+    content: '▶';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+.video-thumb-link:hover::after {
+    background: rgba(0, 0, 0, 0.65);
+}
+
+.video-caption {
+    margin-top: 0.75rem;
+    text-align: center;
+    color: var(--text-gray);
+    font-size: 0.95rem;
+}
+
+/* 3D Carousel for Instagram */
+.insta-carousel {
+    position: relative;
+    perspective: 1200px;
+}
+
+.carousel-stage {
+    position: relative;
+    margin: 0 auto;
+    height: clamp(420px, 65vh, 640px);
+    --offset: clamp(170px, 26vw, 280px);
+}
+
+.carousel-item {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: clamp(220px, 28vw, 320px);
+    transform-style: preserve-3d;
+    transition: transform 0.6s ease, filter 0.6s ease, opacity 0.6s ease;
+}
+
+.carousel-item .video-card { width: 100%; }
+
+.carousel-item.pos-center {
+    transform: translateX(-50%) translateZ(80px);
+    z-index: 3;
+    filter: none;
+}
+
+.carousel-item.pos-left {
+    transform: translateX(calc(-50% - var(--offset))) rotateY(18deg) translateZ(-40px) scale(0.95);
+    z-index: 2;
+    filter: brightness(0.95) saturate(0.95);
+}
+
+.carousel-item.pos-right {
+    transform: translateX(calc(-50% + var(--offset))) rotateY(-18deg) translateZ(-40px) scale(0.95);
+    z-index: 2;
+    filter: brightness(0.95) saturate(0.95);
+}
+
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--accent-white);
+    border: 1px solid var(--border-gray);
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-dark);
+}
+
+.carousel-btn:hover { box-shadow: var(--shadow-lg); }
+.carousel-btn.prev { left: 0; }
+.carousel-btn.next { right: 0; }
+
+@media (max-width: 768px) {
+    .carousel-stage { --offset: clamp(120px, 34vw, 180px); height: clamp(420px, 70vh, 560px); }
+    .carousel-item { width: clamp(220px, 44vw, 280px); }
+}
+
 /* Coaches Section */
 .coaches {
     padding: 6rem 0;
-    background: var(--background-gray);
+    background: radial-gradient(1200px 800px at 10% 10%, rgba(127,176,105,0.08), transparent 60%),
+                radial-gradient(900px 600px at 90% 20%, rgba(106,154,86,0.06), transparent 65%),
+                #0b1020;
+    position: relative;
+    overflow: hidden;
+}
+
+.coaches::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(closest-side, rgba(0,0,0,0.5), rgba(0,0,0,0));
+    pointer-events: none;
 }
 
 .coaches-grid {
@@ -549,6 +785,8 @@ html {
     overflow: hidden;
     box-shadow: var(--shadow);
     transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
 }
 
 .coach-card:hover {
@@ -574,6 +812,9 @@ html {
 
 .coach-content {
     padding: 2rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .coach-content h3 {
@@ -598,8 +839,8 @@ html {
 
 /* Remove white band under coach cards by extending background to bottom */
 .coach-card .coach-content {
-    border-bottom-left-radius: 20px;
-    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px !important;
+    border-bottom-right-radius: 20px !important;
 }
 .coach-card .coach-content > :last-child {
     margin-bottom: 0;
@@ -1087,55 +1328,82 @@ button:focus,
 /* Services Section */
 .services {
     padding: 6rem 0;
-    background: var(--accent-white);
+    background: radial-gradient(1200px 800px at 10% 10%, rgba(127,176,105,0.08), transparent 60%),
+                radial-gradient(900px 600px at 90% 20%, rgba(106,154,86,0.06), transparent 65%),
+                #0b1020;
+    position: relative;
+    overflow: hidden;
+}
+
+.services::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(closest-side, rgba(0,0,0,0.5), rgba(0,0,0,0));
+    pointer-events: none;
 }
 
 .services-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 2rem;
+    gap: 2.2rem;
     max-width: 1400px;
     margin: 0 auto;
 }
 
 .service-card {
-    background: var(--background-gray);
+    background: linear-gradient(180deg, rgba(17,24,39,0.9), rgba(15,23,42,0.9));
     border-radius: 20px;
     padding: 2.5rem;
-    box-shadow: var(--shadow);
-    transition: all 0.3s ease;
+    box-shadow: 0 20px 35px -10px rgba(0,0,0,0.5);
+    transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
     position: relative;
     display: flex;
     flex-direction: column;
-    border: 2px solid transparent;
+    border: 1px solid rgba(255,255,255,0.08);
 }
 
 .service-card:not(.featured) {
-    border-color: var(--border-gray);
+    border-color: rgba(255,255,255,0.08);
 }
 
 .service-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--primary-green);
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: 0 30px 60px -15px rgba(0,0,0,0.6), 0 0 0 1px rgba(127,176,105,0.25) inset;
+    border-color: rgba(127,176,105,0.65);
 }
 
 .service-card.featured {
-    background: linear-gradient(135deg, var(--light-green) 0%, var(--accent-white) 100%);
-    border: 2px solid var(--primary-green);
+    background: linear-gradient(180deg, rgba(12,18,32,1), rgba(10,16,28,1));
+    border: 1px solid transparent;
+}
+
+.service-card.featured::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 22px;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(127,176,105,0.85), rgba(106,154,86,0.85));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    pointer-events: none;
 }
 
 .service-badge {
     position: absolute;
     top: -15px;
     right: 20px;
-    background: var(--primary-green);
+    background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
     color: var(--accent-white);
     padding: 0.5rem 1rem;
     border-radius: 20px;
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 0.5px;
+    box-shadow: 0 10px 20px -8px rgba(127,176,105,0.5);
 }
 
 .service-header {
@@ -1146,7 +1414,7 @@ button:focus,
 .service-header h3 {
     font-size: 1.8rem;
     font-weight: 700;
-    color: var(--text-dark);
+    color: #e5f3e8;
     margin-bottom: 1rem;
 }
 
@@ -1158,15 +1426,20 @@ button:focus,
 
 .service-price .price {
     font-size: 3rem;
-    font-weight: 700;
+    font-weight: 800;
     color: var(--primary-green);
     line-height: 1;
 }
 
 .service-price .period {
     font-size: 0.9rem;
-    color: var(--text-gray);
+    color: #9ca3af;
     margin-top: 0.5rem;
+}
+
+/* Improve readability of features on dark background */
+.services .service-features li {
+    color: #d1d5db;
 }
 
 .service-content {
@@ -1176,9 +1449,9 @@ button:focus,
 }
 
 .service-description {
-    color: var(--text-gray);
-    line-height: 1.6;
-    margin-bottom: 1.5rem;
+    color: #c7d2fe;
+    line-height: 1.7;
+    margin-bottom: 1.2rem;
     text-align: center;
 }
 
@@ -1205,32 +1478,80 @@ button:focus,
 
 .service-total {
     text-align: center;
-    font-weight: 600;
-    color: var(--text-dark);
-    margin-bottom: 1.5rem;
+    font-weight: 700;
+    color: #e5f3e8;
+    margin-bottom: 1.2rem;
     padding: 0.8rem;
-    background: var(--accent-white);
+    background: linear-gradient(180deg, rgba(17,24,39,0.7), rgba(17,24,39,0.5));
     border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.06);
 }
 
 .service-btn {
-    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    width: auto;
+    min-width: 220px;
     background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
     color: var(--accent-white);
     padding: 1rem 2rem;
     border: none;
-    border-radius: 50px;
-    font-weight: 600;
+    border-radius: 999px;
+    font-weight: 700;
     font-size: 1rem;
+    letter-spacing: 0.3px;
+    text-decoration: none;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: var(--shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+    box-shadow: 0 12px 24px -10px rgba(127,176,105,0.5);
 }
 
 .service-btn:hover {
-    filter: brightness(1.05);
-    transform: translateY(-2px);
+    filter: brightness(1.08);
+    transform: translateY(-3px);
+    box-shadow: 0 18px 36px -12px rgba(127,176,105,0.6);
+}
+
+/* Alternate light theme for every even card */
+.services-grid .service-card:nth-child(even) {
+    background: var(--accent-white);
+    border: 1px solid var(--border-gray);
+    box-shadow: var(--shadow);
+}
+
+.services-grid .service-card:nth-child(even):hover {
+    transform: translateY(-6px) scale(1.01);
     box-shadow: var(--shadow-lg);
+    border-color: var(--primary-green);
+}
+
+.services-grid .service-card:nth-child(even) .service-header h3 {
+    color: var(--text-dark);
+}
+
+.services-grid .service-card:nth-child(even) .service-description {
+    color: var(--text-gray);
+}
+
+.services-grid .service-card:nth-child(even) .service-total {
+    color: var(--text-dark);
+    background: var(--accent-white);
+    border: 1px solid var(--border-gray);
+}
+
+.services-grid .service-card:nth-child(even) .service-features li {
+    color: var(--text-dark);
+}
+
+.services-grid .service-card:nth-child(even) .service-price .period {
+    color: var(--text-gray);
+}
+
+.service-btn:focus-visible {
+    outline: 3px solid rgba(127, 176, 105, 0.45);
+    outline-offset: 3px;
 }
 
 /* Reveal on scroll */
@@ -1273,6 +1594,13 @@ button:focus,
 .service-card.compact .service-price .price {
     font-size: 2.5rem;
 }
+
+/* Services section header inversion */
+.services .section-header h2 { color: #e5f3e8; }
+.services .section-header p { color: #9ca3af; }
+/* Invert headers on dark sections */
+.coaches .section-header h2, .highlights .section-header h2 { color: #e5f3e8; }
+.coaches .section-header p,  .highlights .section-header p  { color: #9ca3af; }
 
 /* Modal Styles */
 .modal {
